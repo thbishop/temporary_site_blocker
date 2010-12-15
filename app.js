@@ -71,13 +71,13 @@ UrlSet.prototype = {
 
   delete: function(url) {
     var self = this;
+    alert('inside delete with' + url);
     this.urls.forEach(function(t, i) {
-      if(t.id == url.id) self.splice(i, 1);
+      if (t == url) {
+        self.urls.splice(i, 1);
+      }
     });
-  },
-
-  findById: function(id) {
-    return this.urls.filter(function(t) { return t.id == id })[0];
+    this.save();
   }
 
 }
@@ -98,13 +98,25 @@ function blockSite(tabId) {
   chrome.tabs.update(tabId, {url: 'blocked.html'});
 }
 
+// register handlers for removing items
+function registerBlockedUrlsRemoveButtons() {
+  $('#blocked_sites li button').each(function(i) {
+    $(this).click(function() {
+      urls.delete($(this).data('url'));
+      populateBlockedUrls();
+    });
+  });
+}
+
 // displays the list of our blocked sites
 function populateBlockedUrls() {
   var urlList = $("<ul class='blocked_list'></ul>");
   for (var i = 0; i < urls.urls.length; i++) {
-    urlList.append('<li>' + urls.urls[i] + '</li>');
+    urlList.append('<li>' + urls.urls[i] + "<button class='blocked_remove_button' data-url='" + urls.urls[i] + "'>remove</button></li>");
   }
   $('#blocked_sites').html(urlList);
+
+  registerBlockedUrlsRemoveButtons(); 
 }
 
 $(document).ready(function() {
@@ -112,16 +124,16 @@ $(document).ready(function() {
   settings.load();
 
   if (settings.all.blockSites) {
-    $('#toggle_site_block_link').text("Don't Block Sites");
+    $('#toggle_site_block_button').text("Don't Block Sites");
   }
   else {
-    $('#toggle_site_block_link').text("Block Sites");
+    $('#toggle_site_block_button').text("Block Sites");
   }
 
   populateBlockedUrls();
 
   // handler to add the current site
-  $('#site_block_link').click(function() {
+  $('#block_this_site_button').click(function() {
     chrome.tabs.getSelected(null, function(tab) {
       urls.create(jQuery.url.setUrl(tab.url).attr('host'));
       populateBlockedUrls();
@@ -131,8 +143,8 @@ $(document).ready(function() {
   });
 
   // handler to toggle site blocking
-  $('#toggle_site_block_link').click(function() {
-    settings.toggle_site_blocking('#toggle_site_block_link');
+  $('#toggle_site_block_button').click(function() {
+    settings.toggle_site_blocking('#toggle_site_block_button');
   });
 
   // handler to close the window
