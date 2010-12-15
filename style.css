@@ -1,0 +1,34 @@
+#container {
+  min-width: 225px;
+  white-space: nowrap;
+}
+
+.hidden {
+  display: none;
+}
+
+.blocked {
+  background-color: #eeeeee;
+  font-weight: bold;
+  font-size: 48px;
+  color: #555555;
+}
+
+#blocked_message {
+  background-color: #eeeeee;
+  width: 50%;
+  margin: 300px auto 0px auto;
+  text-align: center;
+}
+
+.blocked_list {
+  padding-left: 0px;
+}
+
+.blocked_list ul {
+  margin-left: 0px;
+}
+
+.blocked_list li {
+  list-style-type: none;
+}

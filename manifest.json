@@ -1,0 +1,14 @@
+{
+  "name": "Temporary Site Blocker",
+  "version": "1.0.0",
+  "description": "Temporarily blocks sites you specify so you can get some work done.",
+  "background_page": "background.html",
+  "browser_action": {
+    "default_icon": "sandwich-19.png",
+    "default_title": "Site Block",
+    "popup": "settings.html"
+  },
+  "permissions": [
+    "tabs"
+  ]
+}
