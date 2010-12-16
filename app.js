@@ -145,6 +145,7 @@ $(document).ready(function() {
   // handler to toggle site blocking
   $('#toggle_site_block_button').click(function() {
     settings.toggle_site_blocking('#toggle_site_block_button');
+    window.close();
   });
 
   // handler to close the window
