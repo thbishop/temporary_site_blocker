@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "Temporarily blocks sites you specify so you can get some work done.",
   "background_page": "background.html",
+  "icons": {
+    "48": "img/icon_48.png",
+    "128": "img/icon_128.png"
+  },
   "browser_action": {
-    "default_icon": "sandwich-19.png",
-    "default_title": "Site Block",
+    "default_icon": "img/icon_19.png",
+    "default_title": "Temporary Site Blocker",
     "popup": "settings.html"
   },
   "permissions": [
