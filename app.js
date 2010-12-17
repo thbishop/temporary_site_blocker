@@ -21,15 +21,12 @@ Settings.prototype = {
   toggle_site_blocking: function(element_id) {
     if (this.all.blockSites) {
       this.all.blockSites = false;
-      text = 'Block Sites';
     }
     else {
       this.all.blockSites = true;
-      text = 'Stop Blocking Sites';
     }
 
     this.save();
-    $(element_id).text(text);
   }
 
 }
@@ -71,7 +68,6 @@ UrlSet.prototype = {
 
   delete: function(url) {
     var self = this;
-    alert('inside delete with' + url);
     this.urls.forEach(function(t, i) {
       if (t == url) {
         self.urls.splice(i, 1);
@@ -87,7 +83,7 @@ function shouldBlockSite(tabId, changeInfo, tab) {
   settings.load();
   if (settings.all.blockSites) {
     jQuery.url.setUrl(tab.url);
-    if (urls.urls.indexOf(jQuery.url.attr('host')) > -1) {
+    if (urlSet.urls.indexOf(jQuery.url.attr('host')) > -1) {
       blockSite(tabId);
     }
   }
@@ -102,17 +98,36 @@ function blockSite(tabId) {
 function registerBlockedUrlsRemoveButtons() {
   $('#blocked_sites li button').each(function(i) {
     $(this).click(function() {
-      urls.delete($(this).data('url'));
+      urlSet.delete($(this).data('url'));
       populateBlockedUrls();
     });
   });
 }
 
+// handles the text and style of our block sites button
+function fillAndStyleBlockSitesButton() {
+  var sitesBlockElem = $('#block_sites_button');
+  if (settings.all.blockSites) {
+    if (sitesBlockElem.hasClass('green')) {
+      sitesBlockElem.removeClass('green');
+    }
+    sitesBlockElem.text("Don't Block Sites"); 
+    sitesBlockElem.addClass('red');
+  }
+  else {
+    if (sitesBlockElem.hasClass('red')) {
+      sitesBlockElem.removeClass('red');
+    }
+    sitesBlockElem.text("Block Sites");
+    sitesBlockElem.addClass('green');
+  }
+}
+
 // displays the list of our blocked sites
 function populateBlockedUrls() {
   var urlList = $("<ul class='blocked_list'></ul>");
-  for (var i = 0; i < urls.urls.length; i++) {
-    urlList.append('<li>' + urls.urls[i] + "<button class='blocked_remove_button' data-url='" + urls.urls[i] + "'>remove</button></li>");
+  for (var i = 0; i < urlSet.urls.length; i++) {
+    urlList.append("<li><button class='grey remove_button' data-url='" + urlSet.urls[i] + "'>" + urlSet.urls[i] + '</button></li>');
   }
   $('#blocked_sites').html(urlList);
 
@@ -120,40 +135,36 @@ function populateBlockedUrls() {
 }
 
 $(document).ready(function() {
-  urls.load();
+  urlSet.load();
   settings.load();
 
-  if (settings.all.blockSites) {
-    $('#toggle_site_block_button').text("Don't Block Sites");
-  }
-  else {
-    $('#toggle_site_block_button').text("Block Sites");
-  }
+  fillAndStyleBlockSitesButton();
 
   populateBlockedUrls();
 
   // handler to add the current site
   $('#block_this_site_button').click(function() {
     chrome.tabs.getSelected(null, function(tab) {
-      urls.create(jQuery.url.setUrl(tab.url).attr('host'));
+      urlSet.create(jQuery.url.setUrl(tab.url).attr('host'));
       populateBlockedUrls();
     });
 
-    $('#block_this_site').addClass('hidden');
+    window.close();
   });
 
   // handler to toggle site blocking
-  $('#toggle_site_block_button').click(function() {
-    settings.toggle_site_blocking('#toggle_site_block_button');
+  $('#block_sites_button').click(function() {
+    settings.toggle_site_blocking('#block_sites_button');
+    fillAndStyleBlockSitesButton();
     window.close();
   });
 
   // handler to close the window
-  $('#close_window').click(function() {
+  $('#close_window_button').click(function() {
     window.close();
   });
 
 });
 
 var settings = new Settings();
-var urls = new UrlSet();
+var urlSet = new UrlSet();
