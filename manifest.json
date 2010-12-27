@@ -1,6 +1,6 @@
 {
   "name": "Temporary Site Blocker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Temporarily blocks sites you specify so you can get some work done.",
   "background_page": "background.html",
   "icons": {
