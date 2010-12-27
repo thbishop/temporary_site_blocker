@@ -16,7 +16,7 @@ task :package do
   puts "done"
   TO_REMOVE.each { |item| print "Removing #{File.join(tmp_dir, item) }..."; FileUtils.rm_r File.join(tmp_dir, item); puts 'done' }
   print "Creating zip #{zip_pkg}...."
-  `cd #{tmp_dir}; zip -9 #{zip_pkg} *; cd -`
+  `cd #{tmp_dir}; zip -9 -r #{zip_pkg} *; cd -`
   if $?.exitstatus == 0
     puts 'done'
   else
