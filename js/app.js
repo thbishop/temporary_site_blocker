@@ -105,21 +105,23 @@ function registerBlockedUrlsRemoveButtons() {
 }
 
 // handles the text and style of our block sites button
-function fillAndStyleBlockSitesButton() {
+function styleForCurrentBlockingState() {
   var sitesBlockElem = $('#block_sites_button');
   if (settings.all.blockSites) {
     if (sitesBlockElem.hasClass('green')) {
       sitesBlockElem.removeClass('green');
     }
-    sitesBlockElem.text("Don't Block Sites"); 
+    sitesBlockElem.text("Disable Site Blocking"); 
     sitesBlockElem.addClass('red');
+    toggleBadge([255, 0, 0, 255], '    ');
   }
   else {
     if (sitesBlockElem.hasClass('red')) {
       sitesBlockElem.removeClass('red');
     }
-    sitesBlockElem.text("Block Sites");
+    sitesBlockElem.text("Enable Site Blocking");
     sitesBlockElem.addClass('green');
+    toggleBadge([119, 212, 42, 255], '    ');
   }
 }
 
@@ -134,11 +136,16 @@ function populateBlockedUrls() {
   registerBlockedUrlsRemoveButtons(); 
 }
 
+function toggleBadge(rgbColor, badgeText) {
+  chrome.browserAction.setBadgeBackgroundColor({'color': rgbColor});
+  chrome.browserAction.setBadgeText({'text': badgeText});
+}
+
 $(document).ready(function() {
   urlSet.load();
   settings.load();
 
-  fillAndStyleBlockSitesButton();
+  styleForCurrentBlockingState();
 
   populateBlockedUrls();
 
@@ -155,12 +162,7 @@ $(document).ready(function() {
   // handler to toggle site blocking
   $('#block_sites_button').click(function() {
     settings.toggle_site_blocking('#block_sites_button');
-    fillAndStyleBlockSitesButton();
-    window.close();
-  });
-
-  // handler to close the window
-  $('#close_window_button').click(function() {
+    styleForCurrentBlockingState();
     window.close();
   });
 
