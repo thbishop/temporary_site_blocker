@@ -82,6 +82,7 @@ UrlSet.prototype = {
 function shouldBlockSite(tabId, changeInfo, tab) {
   settings.load();
   if (settings.all.blockSites) {
+    urlSet.load();
     jQuery.url.setUrl(tab.url);
     if (urlSet.urls.indexOf(jQuery.url.attr('host')) > -1) {
       blockSite(tabId);
